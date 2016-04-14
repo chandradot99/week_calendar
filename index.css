@@ -20,6 +20,7 @@ body {
 
 .row2 {
   margin-top: 0px;
+  margin-bottom: 50px;
 }
 
 .days {
@@ -53,8 +54,7 @@ p {
 }
 
 .data {
-  margin-top: 50px;
-  display: inline-block;
+  float: left;
   margin-right: 100px;
 }
 
@@ -78,10 +78,6 @@ p {
   font-size: 20px;
   border: none;
   border-radius: 5px;
-
-}
-
-#json {
 
 }
 
