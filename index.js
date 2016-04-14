@@ -8,6 +8,7 @@ function getRandomColor() {
 
 // Function to calculate size of squares inside birthday cards
 function getDivSize(dayBirthdays) {
+
   var totalBirthdays = [0,0,0,0,0,0,0];
 
   for(var i=0;i<dayBirthdays.length;i++)
@@ -33,18 +34,16 @@ function leapYear(year){
     return false;  
 }
 
-// Function to find doomsday of an input year
-function calDoomDay(year) {
+// Function to find day for given birthday using doomsday algorithm and it returns the array of days, each containing the array of initials.
+function doomsdayAlgorithm(year) {
 
   var anchorDays = [2,0,5,3];
   var twoDigit = year%100;
 
-  return ((Math.floor(twoDigit/12)) + (twoDigit%12) + (Math.floor((twoDigit%12)/4)) + (anchorDays[(Math.floor(year/100))%4])) % 7;
-}
+  var doomsDay =  ((Math.floor(twoDigit/12)) + (twoDigit%12) + (Math.floor((twoDigit%12)/4)) + (anchorDays[(Math.floor(year/100))%4])) % 7;
 
-// Implements main logic to find day for input date
-function findDayForInputDate(dayBirthdays,doomsDay,year)
-{
+  var dayBirthdays = [[],[],[],[],[],[],[]];
+
   if (leapYear(year))
     var doomsDates = [4,29,7,4,9,6,11,8,5,10,7,12];
   else
@@ -70,12 +69,13 @@ function findDayForInputDate(dayBirthdays,doomsDay,year)
     var nameArr = (birthdays[i].name).split(" ");
     var name = nameArr[0][0] + nameArr[1][0];
     dayBirthdays[day].push(name);
-  }   
-  
+  }
+
+  return dayBirthdays;   
 }
 
-// function to create square box for birthday card
-function createSquareBoxForCard(weekDays,dayBirthdays)
+// function to create square boxes for birthday cards
+function createSquareBoxForCard(dayBirthdays)
 {
     for(var i =0;i<dayBirthdays.length;i++)
     {
@@ -94,7 +94,7 @@ function createSquareBoxForCard(weekDays,dayBirthdays)
 }
 
 // Function to clear a birthday card boxes on update of year
-function clearBirthdayCard(weekDays)
+function clearBirthdayCard()
 {
   for(var i=0;i<weekDays.length;i++)
   {
@@ -120,18 +120,21 @@ function findDay() {
     alert("Year is not valid");
     return false;
   }
-  var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
-  clearBirthdayCard(weekDays);
 
+  clearBirthdayCard();
+
+  //To sort json data according to the age
   birthdays.sort(function(a,b) { 
     return new Date(b.birthday).getTime() - new Date(a.birthday).getTime() 
   });
 
-  var doomsDay = calDoomDay(year);
-  var dayBirthdays = [[],[],[],[],[],[],[]];
-  findDayForInputDate(dayBirthdays,doomsDay,year);
-  createSquareBoxForCard(weekDays,dayBirthdays);                          
+  var dayBirthdays = doomsdayAlgorithm(year);
+  createSquareBoxForCard(dayBirthdays);                          
 }
+
+
+// Global Variables and json data
+var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
 
 var birthdays = [
   {
