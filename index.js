@@ -52,25 +52,36 @@ function doomsdayAlgorithm(year) {
   for(var i=0;i<birthdays.length;i++)
   {
     var birth = birthdays[i].birthday;
+    var birthYear = parseInt(birth.substr(6,4));
     var date = parseInt(birth.substr(3,2));
     var month = parseInt(birth.substr(0,2));
 
-    var nearDate = doomsDates[month-1];
+    if(year>=birthYear)
+    {
+      var nearDate = doomsDates[month-1];
 
-    var diff = (Math.abs(nearDate - date))%7;
+      var diff = (Math.abs(nearDate - date))%7;
 
-    var day;
-    if(date < nearDate)
-      day = (doomsDay - diff + 7)%7;
-    else
-      day = (doomsDay + diff)%7;
+      var day;
+      if(date < nearDate)
+        day = (doomsDay - diff + 7)%7;
+      else
+        day = (doomsDay + diff)%7;
 
 
-    var nameArr = (birthdays[i].name).split(" ");
-    var name = nameArr[0][0] + nameArr[1][0];
-    dayBirthdays[day].push(name);
+      var nameArr = (birthdays[i].name).split(" ");
+      var name = nameArr[0][0] + nameArr[1][0];
+      dayBirthdays[day].push(name);
+    }
+
+
   }
 
+  for(var i=0;i<dayBirthdays.length;i++)
+  {
+    if(dayBirthdays[i].length == 0)
+      dayBirthdays[i].push("No Birthdays");
+  }
   return dayBirthdays;   
 }
 
