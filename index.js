@@ -1,27 +1,12 @@
-function leapYear(year){
-  if( (0 == year % 4) && (0 != year % 100) || (0 == year % 400) )
-    return true; 
-  else
-    return false;  
-}
-
-function calDoomDay(year) {
-
-  var anchorDays = [2,0,5,3];
-  var twoDigit = year%100;
-
-  return ((Math.floor(twoDigit/12)) + (twoDigit%12) + (Math.floor((twoDigit%12)/4)) + (anchorDays[(Math.floor(year/100))%4])) % 7;
-}
-
+// Function to generate random color for birthday card boxes
 function getRandomColor() {
-  var letters = '0123456789ABCDEF'.split('');
-  var color = '#';
-  for (var i = 0; i < 6; i++ ) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+
+ return 'rgb(' +  (Math.floor((150-160)*Math.random()) + 230) + ',' + 
+                  (Math.floor((120-160)*Math.random()) + 230) + ',' + 
+                  (Math.floor((120-160)*Math.random()) + 230) + ')';
 }
 
+// Function to calculate size of squares inside birthday cards
 function getDivSize(dayBirthdays) {
   var totalBirthdays = [0,0,0,0,0,0,0];
 
@@ -40,23 +25,30 @@ function getDivSize(dayBirthdays) {
   return divSize;
 }
 
-function findDay() {
-  var year = document.getElementById("year").value;
-  var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
-  var doomsDay = calDoomDay(year);
+// Function to check if a given year is a leap year or not
+function leapYear(year){
+  if( (0 == year % 4) && (0 != year % 100) || (0 == year % 400) )
+    return true; 
+  else
+    return false;  
+}
 
+// Function to find doomsday of an input year
+function calDoomDay(year) {
+
+  var anchorDays = [2,0,5,3];
+  var twoDigit = year%100;
+
+  return ((Math.floor(twoDigit/12)) + (twoDigit%12) + (Math.floor((twoDigit%12)/4)) + (anchorDays[(Math.floor(year/100))%4])) % 7;
+}
+
+// Implements main logic to find day for input date
+function findDayForInputDate(dayBirthdays,doomsDay,year)
+{
   if (leapYear(year))
     var doomsDates = [4,29,7,4,9,6,11,8,5,10,7,12];
   else
     var doomsDates = [3,28,7,4,9,6,11,8,5,10,7,12];
-
-
-birthdays.sort(function(a,b) { 
-  return new Date(b.birthday).getTime() - new Date(a.birthday).getTime() 
-});
-
-
-  var dayBirthdays = [[],[],[],[],[],[],[]];
 
   for(var i=0;i<birthdays.length;i++)
   {
@@ -80,36 +72,66 @@ birthdays.sort(function(a,b) {
     dayBirthdays[day].push(name);
   }   
   
-  var divSize = getDivSize(dayBirthdays);
-  console.log(divSize);
-
-  for(var i =0;i<dayBirthdays.length;i++)
-  {
-    for(var j = 0; j<dayBirthdays[i].length;j++)
-    {
-      var para = document.createElement("P");                       
-      var t = document.createTextNode(dayBirthdays[i][j]);  
-      para.appendChild(t);    
-    
-      
-      switch(i)
-      {
-        case 1: document.getElementById("monday").appendChild(para);break;
-        case 2: document.getElementById("tuesday").appendChild(para);break;
-        case 3: document.getElementById("wednesday").appendChild(para);break;
-        case 4: document.getElementById("thursday").appendChild(para);break;
-        case 5: document.getElementById("friday").appendChild(para);break;
-        case 6: document.getElementById("saturday").appendChild(para);break;
-        case 0: document.getElementById("sunday").appendChild(para);break;
-      }
-      para.style.width = divSize[i];
-      para.style.height = divSize[i];
-      para.style.backgroundColor = getRandomColor();                                         
-    }
-  }
-
 }
 
+// function to create square box for birthday card
+function createSquareBoxForCard(weekDays,dayBirthdays)
+{
+    for(var i =0;i<dayBirthdays.length;i++)
+    {
+      for(var j = 0; j<dayBirthdays[i].length;j++)
+      {
+        var divSize = getDivSize(dayBirthdays);
+        var para = document.createElement("P");                       
+        var t = document.createTextNode(dayBirthdays[i][j]);  
+        para.appendChild(t);    
+        document.getElementById(weekDays[i]).appendChild(para);
+        para.style.width = divSize[i];
+        para.style.height = divSize[i];
+        para.style.backgroundColor = getRandomColor();
+      }
+    } 
+}
+
+// Function to clear a birthday card boxes on update of year
+function clearBirthdayCard(weekDays)
+{
+  for(var i=0;i<weekDays.length;i++)
+  {
+    var node = document.getElementById(weekDays[i]);
+    while (node.hasChildNodes()) {
+      node.removeChild(node.lastChild);
+    }
+  }
+}
+
+// Main function
+function findDay() {
+  var year = document.getElementById("year").value;
+  
+  if(year === "")
+  {
+    alert("Year cannot be blank");
+    return false;
+  }
+
+  if (isNaN(year) || year<=0) 
+  {
+    alert("Year is not valid");
+    return false;
+  }
+  var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
+  clearBirthdayCard(weekDays);
+
+  birthdays.sort(function(a,b) { 
+    return new Date(b.birthday).getTime() - new Date(a.birthday).getTime() 
+  });
+
+  var doomsDay = calDoomDay(year);
+  var dayBirthdays = [[],[],[],[],[],[],[]];
+  findDayForInputDate(dayBirthdays,doomsDay,year);
+  createSquareBoxForCard(weekDays,dayBirthdays);                          
+}
 
 var birthdays = [
   {
