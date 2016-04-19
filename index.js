@@ -6,25 +6,25 @@ function getRandomColor() {
                   (Math.floor((120-160)*Math.random()) + 230) + ')';
 }
 
+
+
 // Function to calculate size of squares inside birthday cards
 function getDivSize(dayBirthdays) {
 
   var totalBirthdays = [0,0,0,0,0,0,0];
 
   for(var i=0;i<dayBirthdays.length;i++)
-  {
     totalBirthdays[i] = dayBirthdays[i].length;
-  }
 
   var divSize = [0,0,0,0,0,0,0]
 
   for(var i=0;i<divSize.length;i++)
-  {
     divSize[i] = (100/(Math.ceil(Math.sqrt(totalBirthdays[i])))) + "%";
-  }
 
   return divSize;
 }
+
+
 
 // Function to check if a given year is a leap year or not
 function leapYear(year){
@@ -34,14 +34,14 @@ function leapYear(year){
     return false;  
 }
 
+
+
 // Function to find day for given birthday using doomsday algorithm and it returns the array of days, each containing the array of initials.
-function doomsdayAlgorithm(year) {
+function doomsdayAlgorithm(year,birthdays) {
 
   var anchorDays = [2,0,5,3];
   var twoDigit = year%100;
-
   var doomsDay =  ((Math.floor(twoDigit/12)) + (twoDigit%12) + (Math.floor((twoDigit%12)/4)) + (anchorDays[(Math.floor(year/100))%4])) % 7;
-
   var dayBirthdays = [[],[],[],[],[],[],[]];
 
   if (leapYear(year))
@@ -59,7 +59,6 @@ function doomsdayAlgorithm(year) {
     if(year>=birthYear)
     {
       var nearDate = doomsDates[month-1];
-
       var diff = (Math.abs(nearDate - date))%7;
 
       var day;
@@ -68,13 +67,10 @@ function doomsdayAlgorithm(year) {
       else
         day = (doomsDay + diff)%7;
 
-
       var nameArr = (birthdays[i].name).split(" ");
       var name = nameArr[0][0] + nameArr[1][0];
       dayBirthdays[day].push(name);
     }
-
-
   }
 
   for(var i=0;i<dayBirthdays.length;i++)
@@ -84,6 +80,8 @@ function doomsdayAlgorithm(year) {
   }
   return dayBirthdays;   
 }
+
+
 
 // function to create square boxes for birthday cards
 function createSquareBoxForCard(dayBirthdays)
@@ -104,6 +102,8 @@ function createSquareBoxForCard(dayBirthdays)
     } 
 }
 
+
+
 // Function to clear a birthday card boxes on update of year
 function clearBirthdayCard()
 {
@@ -116,10 +116,13 @@ function clearBirthdayCard()
   }
 }
 
+
+
 // Main function
 function findDay() {
   var year = document.getElementById("year").value;
-  
+  var birthdays = eval(document.getElementById("json").value);
+
   if(year === "")
   {
     alert("Year cannot be blank");
@@ -139,99 +142,11 @@ function findDay() {
     return new Date(b.birthday).getTime() - new Date(a.birthday).getTime() 
   });
 
-  var dayBirthdays = doomsdayAlgorithm(year);
+  var dayBirthdays = doomsdayAlgorithm(year,birthdays);
   createSquareBoxForCard(dayBirthdays);                          
 }
 
 
+
 // Global Variables and json data
-var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"]
-
-var birthdays = [
-  {
-    name: "Tyrion Lannister",
-    birthday: "12/02/1978"
-  }, {
-    name: "Cersei Lannister",
-    birthday: "11/30/1975"
-  }, {
-    name: "Daenerys Targaryen",
-    birthday: "11/24/1991"
-  }, {
-    name: "Arya Stark",
-    birthday: "11/25/1996"
-  }, {
-    name: "Jon Snow",
-    birthday: "12/03/1989"
-  }, {
-    name: "Jorah Mormont",
-    birthday: "12/16/1968"
-  }, {
-    name: "Jaime Lannister",
-    birthday: "12/06/1975"
-  }, {
-    name: "Sandor Clegane",
-    birthday: "11/07/1969"
-  }, {
-    name: "Tywin Lannister",
-    birthday: "10/12/1951"
-  }, {
-    name: "Theon Greyjoy",
-    birthday: "12/31/1989"
-  }, {
-    name: "Samwell Tarly",
-    birthday: "12/07/1990"
-  }, {
-    name: "Joffrey Baratheon",
-    birthday: "06/12/1992"
-  }, {
-    name: "Catelyn Stark",
-    birthday: "12/03/1962"
-  }, {
-    name: "Bran Stark",
-    birthday: "12/02/1995"
-  }, {
-    name: "Petyr Baelish",
-    birthday: "11/20/1974"
-  }, {
-    name: "Robb Stark",
-    birthday: "11/28/1986"
-  }, {
-    name: "Brienne Tarth",
-    birthday: "11/27/1985"
-  }, {
-    name: "Margaery Tyrell",
-    birthday: "12/02/1989"
-  }, {
-    name: "Stannis Baratheon",
-    birthday: "09/14/1971"
-  }, {
-    name: "Davos Seaworth",
-    birthday: "02/13/1973"
-  }, {
-    name: "Tormund Giantsbane",
-    birthday: "12/14/1974"
-  }, {
-    name: "Jeor Mormont",
-    birthday: "11/01/1955"
-  }, {
-    name: "Eddard Stark",
-    birthday: "12/02/1963"
-  }, {
-    name: "Khal Drogo",
-    birthday: "12/05/1980"
-  }, {
-    name: "Ramsay Bolton",
-    birthday: "12/05/1976"
-  }, {
-    name: "Robert Baratheon",
-    birthday: "12/02/1965"
-  }, {
-    name: "Daario Naharis",
-    birthday: "12/02/1985"
-  }, {
-    name: "Viserys Targaryen",
-    birthday: "12/06/1984"
-  }
-];
-
+var weekDays = ["sunday","monday","tuesday","wednesday","thursday","friday","saturday"];
